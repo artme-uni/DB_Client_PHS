@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+<entry key="Clients">BEGIN
+    INSERT INTO Clients VALUES (default, 'Андреев', 'Мирон', 'Давидович', 0, 0);
+    INSERT INTO Clients VALUES (default, 'Петухов', 'Корней', 'Всеволодович', 1, 5);
+    INSERT INTO Clients VALUES (default, 'Наумов', 'Никифор', 'Донатович', 1, 15);
+    INSERT INTO Clients VALUES (default, 'Самсонов', 'Илларион', 'Кимович', 0, 30);
+    INSERT INTO Clients VALUES (default, 'Никитин', 'Арсений', 'Михайлович', 1, 0);
+    INSERT INTO Clients VALUES (default, 'Воронцов', 'Нинель', 'Ярославович', 0, 25);
+    INSERT INTO Clients VALUES (default, 'Мартынов', 'Евдоким', 'Иринеевич', 0, 0);
+    INSERT INTO Clients VALUES (default, 'Осипов', 'Феликс', 'Богданович', 1, 30);
+    INSERT INTO Clients VALUES (default, 'Афанасьев', 'Максимилиан', 'Данилович', 1, 0);
+    INSERT INTO Clients VALUES (default, 'Журавлёв', 'Леонард', 'Агафонович', 0, 50);
+END;</entry>
+
+<entry key="Outlet_types">BEGIN
+    INSERT INTO Outlet_types VALUES(default,'Филиал');
+    INSERT INTO Outlet_types VALUES(default,'Киоск');
+    INSERT INTO Outlet_types VALUES(default,'Фотомагазин');
+END;</entry>
+
+<entry key="Outlets">BEGIN
+    INSERT INTO Outlets VALUES(default,1,NULL,'пр. Красный 54/1');
+    INSERT INTO Outlets VALUES(default,1,NULL,'ул. Пирогова 66');
+    INSERT INTO Outlets VALUES(default,1,NULL,'ул. Давыдовская 35');
+    INSERT INTO Outlets VALUES(default,2,1,'пр. Красный 128');
+    INSERT INTO Outlets VALUES(default,3,1,'ул. Фрунзе 226/1');
+    INSERT INTO Outlets VALUES(default,3,1,'ул. Лубянский проезд 2');
+    INSERT INTO Outlets VALUES(default,2,2,'ул. Институтская 59');
+    INSERT INTO Outlets VALUES(default,2,2,'ул. Арбузова 2');
+    INSERT INTO Outlets VALUES(default,3,2,'ул. Ильчиа 21');
+    INSERT INTO Outlets VALUES(default,2,3,'туп. Магазинный 3');
+    INSERT INTO Outlets VALUES(default,3,3,'ул. Савельева 12');
+    INSERT INTO Outlets VALUES(default,3,3,'ул. Малая Дмитровка 77');
+END;</entry>
+
+<entry key="Professions">BEGIN
+    INSERT INTO Professions VALUES(default, 'Менеджер');
+    INSERT INTO Professions VALUES(default, 'Проявитель');
+    INSERT INTO Professions VALUES(default, 'Охранник');
+    INSERT INTO Professions VALUES(default, 'Бухгалтер');
+    INSERT INTO Professions VALUES(default, 'Человек, печатающий фотографии');
+    INSERT INTO Professions VALUES(default, 'Системный администратор');
+    INSERT INTO Professions VALUES(default, 'Продавец');
+    INSERT INTO Professions VALUES(default, 'Фотограф');
+END;</entry>
+
+<entry key="Jobs">BEGIN
+    INSERT INTO Jobs VALUES(default,1,1,2);
+    INSERT INTO Jobs VALUES(default,1,2,2);
+    INSERT INTO Jobs VALUES(default,1,3,1);
+    INSERT INTO Jobs VALUES(default,1,4,2);
+    INSERT INTO Jobs VALUES(default,1,5,2);
+    INSERT INTO Jobs VALUES(default,1,6,1);
+    INSERT INTO Jobs VALUES(default,1,7,1);
+    INSERT INTO Jobs VALUES(default,2,1,1);
+    INSERT INTO Jobs VALUES(default,2,2,1);
+    INSERT INTO Jobs VALUES(default,2,4,1);
+    INSERT INTO Jobs VALUES(default,2,5,1);
+    INSERT INTO Jobs VALUES(default,2,7,1);
+    INSERT INTO Jobs VALUES(default,3,1,4);
+    INSERT INTO Jobs VALUES(default,3,2,3);
+    INSERT INTO Jobs VALUES(default,3,3,1);
+    INSERT INTO Jobs VALUES(default,3,4,2);
+    INSERT INTO Jobs VALUES(default,3,5,3);
+    INSERT INTO Jobs VALUES(default,3,6,2);
+    INSERT INTO Jobs VALUES(default,3,7,1);
+    INSERT INTO Jobs VALUES(default,4,7,1);
+    INSERT INTO Jobs VALUES(default,5,7,1);
+    INSERT INTO Jobs VALUES(default,5,8,1);
+    INSERT INTO Jobs VALUES(default,6,7,1);
+    INSERT INTO Jobs VALUES(default,6,8,1);
+    INSERT INTO Jobs VALUES(default,7,7,1);
+    INSERT INTO Jobs VALUES(default,8,7,1);
+    INSERT INTO Jobs VALUES(default,9,7,1);
+    INSERT INTO Jobs VALUES(default,9,8,1);
+    INSERT INTO Jobs VALUES(default,10,7,1);
+    INSERT INTO Jobs VALUES(default,11,7,2);
+    INSERT INTO Jobs VALUES(default,11,8,1);
+    INSERT INTO Jobs VALUES(default,12,7,3);
+    INSERT INTO Jobs VALUES(default,12,8,1);
+END;</entry>
+
+<entry key="Firms">BEGIN
+    INSERT INTO Firms VALUES (default, 'Lomond');
+    INSERT INTO Firms VALUES (default, 'Kodak');
+    INSERT INTO Firms VALUES (default, 'Fomapan');
+    INSERT INTO Firms VALUES (default, 'Darkroom');
+    INSERT INTO Firms VALUES (default, 'Canon');
+    INSERT INTO Firms VALUES (default, 'Fujifilm');
+    INSERT INTO Firms VALUES (default, 'Sony');
+END;</entry>
+
+<entry key="Items">BEGIN
+    INSERT INTO Items VALUES (default, 1, 'Матовая фотобумага', null);
+    INSERT INTO Items VALUES (default, 1, 'Глянцевая фотобумага', null);
+    INSERT INTO Items VALUES (default, 1, 'Атластная фотобумага', null);
+    INSERT INTO Items VALUES (default, 2, 'Фотопленка 300/35', 890);
+    INSERT INTO Items VALUES (default, 2, 'Фотопленка 400/35', 1120);
+    INSERT INTO Items VALUES (default, 2, 'Фотопленка 200/36', 760);
+    INSERT INTO Items VALUES (default, 3, 'Фотопленка 400/36', 480);
+    INSERT INTO Items VALUES (default, 3, 'Фотопленка 200/36', 330);
+    INSERT INTO Items VALUES (default, 4, 'Проявитель сухой', null);
+    INSERT INTO Items VALUES (default, 5, 'Зеркальная камера 2000d', 32990);
+    INSERT INTO Items VALUES (default, 5, 'Зеркальная камера 250d', 46990);
+    INSERT INTO Items VALUES (default, 5, 'Зеркальная камера Mark II', 87990);
+    INSERT INTO Items VALUES (default, 5, 'Объектив 50mm', 25490);
+    INSERT INTO Items VALUES (default, 5, 'Объектив 18-200mm', 39990);
+    INSERT INTO Items VALUES (default, 6, 'Беззеркальная камера X-T30', 74990);
+    INSERT INTO Items VALUES (default, 6, 'Беззеркальная камера X-T2', 110990);
+    INSERT INTO Items VALUES (default, 6, 'Беззеркальная камера X-100F', 94490);
+    INSERT INTO Items VALUES (default, 6, 'Объектив 30mm', 32990);
+    INSERT INTO Items VALUES (default, 6, 'Объектив 18-55mm', 35990);
+    INSERT INTO Items VALUES (default, 7, 'Фотоаппарт Alpha A6000', 37990);
+    INSERT INTO Items VALUES (default, 7, 'Экш-камера FDRX3000', 35990);
+END;</entry>
+
+<entry key="Storage">BEGIN
+    INSERT INTO Storage VALUES (default, 1, 1, 772);
+    INSERT INTO Storage VALUES (default, 1, 2, 174);
+    INSERT INTO Storage VALUES (default, 1, 3, 725);
+    INSERT INTO Storage VALUES (default, 1, 9, 457);
+    INSERT INTO Storage VALUES (default, 2, 1, 13);
+    INSERT INTO Storage VALUES (default, 2, 2, 975);
+    INSERT INTO Storage VALUES (default, 2, 3, 271);
+    INSERT INTO Storage VALUES (default, 2, 9, 542);
+    INSERT INTO Storage VALUES (default, 3, 1, 134);
+    INSERT INTO Storage VALUES (default, 3, 2, 838);
+    INSERT INTO Storage VALUES (default, 3, 3, 992);
+    INSERT INTO Storage VALUES (default, 3, 9, 15);
+    INSERT INTO Storage VALUES (default, 5, 10, 0);
+    INSERT INTO Storage VALUES (default, 5, 11, 7);
+    INSERT INTO Storage VALUES (default, 5, 12, 0);
+    INSERT INTO Storage VALUES (default, 5, 13, 1);
+    INSERT INTO Storage VALUES (default, 5, 14, 5);
+    INSERT INTO Storage VALUES (default, 5, 15, 9);
+    INSERT INTO Storage VALUES (default, 5, 16, 8);
+    INSERT INTO Storage VALUES (default, 5, 17, 9);
+    INSERT INTO Storage VALUES (default, 5, 18, 6);
+    INSERT INTO Storage VALUES (default, 5, 19, 9);
+    INSERT INTO Storage VALUES (default, 5, 20, 0);
+    INSERT INTO Storage VALUES (default, 5, 21, 2);
+    INSERT INTO Storage VALUES (default, 6, 10, 5);
+    INSERT INTO Storage VALUES (default, 6, 11, 5);
+    INSERT INTO Storage VALUES (default, 6, 12, 5);
+    INSERT INTO Storage VALUES (default, 6, 13, 4);
+    INSERT INTO Storage VALUES (default, 6, 14, 5);
+    INSERT INTO Storage VALUES (default, 6, 15, 5);
+    INSERT INTO Storage VALUES (default, 6, 16, 9);
+    INSERT INTO Storage VALUES (default, 6, 17, 8);
+    INSERT INTO Storage VALUES (default, 6, 18, 4);
+    INSERT INTO Storage VALUES (default, 6, 19, 6);
+    INSERT INTO Storage VALUES (default, 6, 20, 9);
+    INSERT INTO Storage VALUES (default, 6, 21, 4);
+    INSERT INTO Storage VALUES (default, 9, 10, 8);
+    INSERT INTO Storage VALUES (default, 9, 11, 7);
+    INSERT INTO Storage VALUES (default, 9, 12, 1);
+    INSERT INTO Storage VALUES (default, 9, 13, 1);
+    INSERT INTO Storage VALUES (default, 9, 14, 6);
+    INSERT INTO Storage VALUES (default, 9, 15, 3);
+    INSERT INTO Storage VALUES (default, 9, 16, 0);
+    INSERT INTO Storage VALUES (default, 9, 17, 9);
+    INSERT INTO Storage VALUES (default, 9, 18, 7);
+    INSERT INTO Storage VALUES (default, 9, 19, 5);
+    INSERT INTO Storage VALUES (default, 9, 20, 5);
+    INSERT INTO Storage VALUES (default, 9, 21, 6);
+    INSERT INTO Storage VALUES (default, 11, 10, 1);
+    INSERT INTO Storage VALUES (default, 11, 11, 9);
+    INSERT INTO Storage VALUES (default, 11, 12, 3);
+    INSERT INTO Storage VALUES (default, 11, 13, 5);
+    INSERT INTO Storage VALUES (default, 11, 14, 4);
+    INSERT INTO Storage VALUES (default, 11, 15, 7);
+    INSERT INTO Storage VALUES (default, 11, 16, 5);
+    INSERT INTO Storage VALUES (default, 11, 17, 0);
+    INSERT INTO Storage VALUES (default, 11, 18, 6);
+    INSERT INTO Storage VALUES (default, 11, 19, 9);
+    INSERT INTO Storage VALUES (default, 11, 20, 5);
+    INSERT INTO Storage VALUES (default, 11, 21, 6);
+    INSERT INTO Storage VALUES (default, 12, 10, 3);
+    INSERT INTO Storage VALUES (default, 12, 11, 8);
+    INSERT INTO Storage VALUES (default, 12, 12, 4);
+    INSERT INTO Storage VALUES (default, 12, 13, 8);
+    INSERT INTO Storage VALUES (default, 12, 14, 0);
+    INSERT INTO Storage VALUES (default, 12, 15, 3);
+    INSERT INTO Storage VALUES (default, 12, 16, 2);
+    INSERT INTO Storage VALUES (default, 12, 17, 1);
+    INSERT INTO Storage VALUES (default, 12, 18, 2);
+    INSERT INTO Storage VALUES (default, 12, 19, 9);
+    INSERT INTO Storage VALUES (default, 12, 20, 8);
+    INSERT INTO Storage VALUES (default, 12, 21, 8);
+    INSERT INTO Storage VALUES (default, 4, 4, 0);
+    INSERT INTO Storage VALUES (default, 4, 5, 3);
+    INSERT INTO Storage VALUES (default, 4, 6, 4);
+    INSERT INTO Storage VALUES (default, 4, 7, 5);
+    INSERT INTO Storage VALUES (default, 4, 8, 9);
+    INSERT INTO Storage VALUES (default, 4, 1, 782);
+    INSERT INTO Storage VALUES (default, 4, 2, 319);
+    INSERT INTO Storage VALUES (default, 4, 3, 474);
+    INSERT INTO Storage VALUES (default, 7, 4, 2);
+    INSERT INTO Storage VALUES (default, 7, 5, 1);
+    INSERT INTO Storage VALUES (default, 7, 6, 5);
+    INSERT INTO Storage VALUES (default, 7, 7, 3);
+    INSERT INTO Storage VALUES (default, 7, 8, 1);
+    INSERT INTO Storage VALUES (default, 8, 4, 5);
+    INSERT INTO Storage VALUES (default, 8, 5, 8);
+    INSERT INTO Storage VALUES (default, 8, 6, 1);
+    INSERT INTO Storage VALUES (default, 8, 7, 1);
+    INSERT INTO Storage VALUES (default, 8, 8, 5);
+    INSERT INTO Storage VALUES (default, 10, 4, 4);
+    INSERT INTO Storage VALUES (default, 10, 5, 2);
+    INSERT INTO Storage VALUES (default, 10, 6, 9);
+    INSERT INTO Storage VALUES (default, 10, 7, 6);
+    INSERT INTO Storage VALUES (default, 10, 8, 1);
+END;</entry>
+
+<entry key="Vendors">BEGIN
+    INSERT INTO Vendors VALUES (default, 'ООО «Черный слон»');
+    INSERT INTO Vendors VALUES (default, 'ООО «Восходящее солнце»');
+    INSERT INTO Vendors VALUES (default, 'ООО «Яркий»');
+    INSERT INTO Vendors VALUES (default, 'ООО «Много чернил»');
+END;</entry>
+
+<entry key="Vendor_Items">BEGIN
+    INSERT INTO Vendor_Items VALUES (4, 1);
+    INSERT INTO Vendor_Items VALUES (4, 2);
+    INSERT INTO Vendor_Items VALUES (4, 3);
+    INSERT INTO Vendor_Items VALUES (3, 4);
+    INSERT INTO Vendor_Items VALUES (3, 5);
+    INSERT INTO Vendor_Items VALUES (3, 6);
+    INSERT INTO Vendor_Items VALUES (3, 7);
+    INSERT INTO Vendor_Items VALUES (3, 8);
+    INSERT INTO Vendor_Items VALUES (4, 9);
+    INSERT INTO Vendor_Items VALUES (2, 10);
+    INSERT INTO Vendor_Items VALUES (2, 11);
+    INSERT INTO Vendor_Items VALUES (2, 12);
+    INSERT INTO Vendor_Items VALUES (2, 13);
+    INSERT INTO Vendor_Items VALUES (2, 14);
+    INSERT INTO Vendor_Items VALUES (2, 15);
+    INSERT INTO Vendor_Items VALUES (2, 16);
+    INSERT INTO Vendor_Items VALUES (2, 17);
+    INSERT INTO Vendor_Items VALUES (2, 18);
+    INSERT INTO Vendor_Items VALUES (2, 19);
+    INSERT INTO Vendor_Items VALUES (1, 20);
+    INSERT INTO Vendor_Items VALUES (1, 21);
+END;</entry>
+
+<entry key="Deliveries">BEGIN
+    INSERT INTO Deliveries VALUES (default, 4, 4, 3, 95, TO_DATE('20.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 4, 5, 3, 7, TO_DATE('27.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 4, 6, 3, 7, TO_DATE('16.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 4, 7, 3, 70, TO_DATE('4.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 4, 8, 3, 40, TO_DATE('4.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 7, 4, 3, 7, TO_DATE('1.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 7, 5, 3, 63, TO_DATE('3.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 7, 6, 3, 80, TO_DATE('21.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 7, 7, 3, 26, TO_DATE('18.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 7, 8, 3, 41, TO_DATE('18.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 8, 4, 3, 67, TO_DATE('10.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 8, 5, 3, 24, TO_DATE('6.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 8, 6, 3, 54, TO_DATE('27.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 8, 7, 3, 33, TO_DATE('8.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 8, 8, 3, 66, TO_DATE('5.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 10, 4, 3, 43, TO_DATE('18.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 10, 5, 3, 67, TO_DATE('5.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 10, 6, 3, 73, TO_DATE('17.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 10, 7, 3, 9, TO_DATE('9.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 10, 8, 3, 6, TO_DATE('24.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 1, 1, 4, 822, TO_DATE('25.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 1, 2, 4, 191, TO_DATE('14.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 1, 3, 4, 267, TO_DATE('21.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 1, 9, 4, 820, TO_DATE('17.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 2, 1, 4, 235, TO_DATE('17.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 2, 2, 4, 974, TO_DATE('12.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 2, 3, 4, 711, TO_DATE('9.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 2, 9, 4, 502, TO_DATE('5.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 3, 1, 4, 130, TO_DATE('20.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 3, 2, 4, 829, TO_DATE('31.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 3, 3, 4, 881, TO_DATE('26.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 3, 9, 4, 57, TO_DATE('24.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 10, 2, 6, TO_DATE('25.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 11, 2, 4, TO_DATE('4.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 12, 2, 12, TO_DATE('15.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 13, 2, 6, TO_DATE('5.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 14, 2, 1, TO_DATE('15.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 15, 2, 9, TO_DATE('9.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 16, 2, 8, TO_DATE('26.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 17, 2, 4, TO_DATE('2.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 18, 2, 6, TO_DATE('29.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 19, 2, 4, TO_DATE('14.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 10, 2, 7, TO_DATE('17.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 11, 2, 8, TO_DATE('23.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 12, 2, 7, TO_DATE('13.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 13, 2, 7, TO_DATE('17.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 14, 2, 9, TO_DATE('9.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 15, 2, 3, TO_DATE('30.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 16, 2, 1, TO_DATE('2.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 17, 2, 8, TO_DATE('26.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 18, 2, 7, TO_DATE('25.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 19, 2, 3, TO_DATE('20.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 10, 2, 7, TO_DATE('10.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 11, 2, 5, TO_DATE('5.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 12, 2, 8, TO_DATE('14.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 13, 2, 9, TO_DATE('14.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 14, 2, 9, TO_DATE('5.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 15, 2, 7, TO_DATE('31.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 16, 2, 3, TO_DATE('30.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 17, 2, 7, TO_DATE('12.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 18, 2, 2, TO_DATE('29.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 19, 2, 1, TO_DATE('13.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 10, 2, 2, TO_DATE('19.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 11, 2, 8, TO_DATE('24.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 12, 2, 2, TO_DATE('25.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 13, 2, 9, TO_DATE('21.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 14, 2, 3, TO_DATE('2.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 15, 2, 7, TO_DATE('11.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 16, 2, 5, TO_DATE('27.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 17, 2, 1, TO_DATE('23.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 18, 2, 3, TO_DATE('20.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 19, 2, 6, TO_DATE('21.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 10, 2, 4, TO_DATE('24.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 11, 2, 3, TO_DATE('23.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 12, 2, 5, TO_DATE('21.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 13, 2, 9, TO_DATE('20.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 14, 2, 4, TO_DATE('20.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 15, 2, 4, TO_DATE('13.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 16, 2, 7, TO_DATE('31.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 17, 2, 7, TO_DATE('10.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 18, 2, 6, TO_DATE('18.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 19, 2, 9, TO_DATE('6.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 20, 1, 1, TO_DATE('10.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 5, 21, 1, 9, TO_DATE('22.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 20, 1, 4, TO_DATE('31.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 6, 21, 1, 8, TO_DATE('3.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 20, 1, 8, TO_DATE('15.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 9, 21, 1, 6, TO_DATE('27.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 20, 1, 3, TO_DATE('20.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 11, 21, 1, 8, TO_DATE('13.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 20, 1, 4, TO_DATE('6.01.2021', 'dd.mm.yyyy'), null);
+    INSERT INTO Deliveries VALUES (default, 12, 21, 1, 5, TO_DATE('8.01.2021', 'dd.mm.yyyy'), null);
+END;</entry>
+
+<entry key="Receipts">BEGIN
+    INSERT INTO Receipts VALUES(default,1,1,TO_DATE('20.01.2021', 'dd.mm.yyyy'),0);
+    INSERT INTO Receipts VALUES(default,2,3,TO_DATE('19.01.2021', 'dd.mm.yyyy'),0);
+    INSERT INTO Receipts VALUES(default,3,4,TO_DATE('10.01.2021', 'dd.mm.yyyy'),0);
+    INSERT INTO Receipts VALUES(default,4,6,TO_DATE('01.02.2021', 'dd.mm.yyyy'),0);
+    INSERT INTO Receipts VALUES(default,6,5,TO_DATE('04.02.2021', 'dd.mm.yyyy'),0);
+    INSERT INTO Receipts VALUES(default,5,7,TO_DATE('30.01.2021', 'dd.mm.yyyy'),0);
+    INSERT INTO Receipts VALUES(default,7,8,TO_DATE('14.02.2021', 'dd.mm.yyyy'),0);
+    INSERT INTO Receipts VALUES(default,8,9,TO_DATE('23.01.2021', 'dd.mm.yyyy'),0);
+    INSERT INTO Receipts VALUES(default,9,10,TO_DATE('10.01.2021', 'dd.mm.yyyy'),0);
+    INSERT INTO Receipts VALUES(default,10,2,TO_DATE('29.01.2021', 'dd.mm.yyyy'),0);
+END;</entry>
+
+<entry key="Orders">BEGIN
+    INSERT INTO Orders VALUES(default,1,0);
+    INSERT INTO Orders VALUES(default,1,0);
+    INSERT INTO Orders VALUES(default,1,0);
+    INSERT INTO Orders VALUES(default,3,1);
+    INSERT INTO Orders VALUES(default,2,0);
+    INSERT INTO Orders VALUES(default,4,0);
+    INSERT INTO Orders VALUES(default,4,1);
+    INSERT INTO Orders VALUES(default,5,0);
+    INSERT INTO Orders VALUES(default,9,0);
+    INSERT INTO Orders VALUES(default,2,0);
+    INSERT INTO Orders VALUES(default,8,1);
+    INSERT INTO Orders VALUES(default,8,0);
+    INSERT INTO Orders VALUES(default,7,0);
+    INSERT INTO Orders VALUES(default,8,0);
+    INSERT INTO Orders VALUES(default,9,0);
+    INSERT INTO Orders VALUES(default,1,0);
+END;</entry>
+
+<entry key="Service_types">BEGIN
+    INSERT INTO Service_types VALUES (default, 'Фотография на документы', 800);
+    INSERT INTO Service_types VALUES (default, 'Художественная съемка', 3400);
+    INSERT INTO Service_types VALUES (default, 'Прокат фотоаппарта', 1200);
+    INSERT INTO Service_types VALUES (default, 'Оцифровка видео', 300);
+    INSERT INTO Service_types VALUES (default, 'Реставрация фотография', 250);
+END;</entry>
+
+<entry key="Service_orders">BEGIN
+    INSERT INTO Service_orders VALUES(6,4);
+    INSERT INTO Service_orders VALUES(8,1);
+    INSERT INTO Service_orders VALUES(12,5);
+    INSERT INTO Service_orders VALUES(11,2);
+END;</entry>
+
+<entry key="Paper_sizes">BEGIN
+    INSERT INTO Paper_sizes VALUES(default,'A0');
+    INSERT INTO Paper_sizes VALUES(default,'A1');
+    INSERT INTO Paper_sizes VALUES(default,'A2');
+    INSERT INTO Paper_sizes VALUES(default,'A3');
+    INSERT INTO Paper_sizes VALUES(default,'A4');
+    INSERT INTO Paper_sizes VALUES(default,'A5');
+    INSERT INTO Paper_sizes VALUES(default,'A6');
+    INSERT INTO Paper_sizes VALUES(default,'A7');
+    INSERT INTO Paper_sizes VALUES(default,'A8');
+END;</entry>
+
+<entry key="Paper_types">BEGIN
+    INSERT INTO Paper_types VALUES(default,'Матовая');
+    INSERT INTO Paper_types VALUES(default,'Глянцевая');
+    INSERT INTO Paper_types VALUES(default,'Атластная');
+END;</entry>
+
+<entry key="Print_prices">BEGIN
+    INSERT INTO Print_prices VALUES(default,1, 1, 240);
+    INSERT INTO Print_prices VALUES(default,2, 1, 230);
+    INSERT INTO Print_prices VALUES(default,3, 1, 220);
+    INSERT INTO Print_prices VALUES(default,4, 1, 210);
+    INSERT INTO Print_prices VALUES(default,5, 1, 200);
+    INSERT INTO Print_prices VALUES(default,6, 1, 190);
+    INSERT INTO Print_prices VALUES(default,7, 1, 180);
+    INSERT INTO Print_prices VALUES(default,8, 1, 170);
+    INSERT INTO Print_prices VALUES(default,1, 2, 280);
+    INSERT INTO Print_prices VALUES(default,2, 2, 270);
+    INSERT INTO Print_prices VALUES(default,3, 2, 260);
+    INSERT INTO Print_prices VALUES(default,4, 2, 250);
+    INSERT INTO Print_prices VALUES(default,5, 2, 240);
+    INSERT INTO Print_prices VALUES(default,6, 2, 230);
+    INSERT INTO Print_prices VALUES(default,7, 2, 220);
+    INSERT INTO Print_prices VALUES(default,8, 2, 210);
+    INSERT INTO Print_prices VALUES(default,1, 3, 320);
+    INSERT INTO Print_prices VALUES(default,2, 3, 310);
+    INSERT INTO Print_prices VALUES(default,3, 3, 300);
+    INSERT INTO Print_prices VALUES(default,4, 3, 290);
+    INSERT INTO Print_prices VALUES(default,5, 3, 280);
+    INSERT INTO Print_prices VALUES(default,6, 3, 270);
+    INSERT INTO Print_prices VALUES(default,7, 3, 260);
+    INSERT INTO Print_prices VALUES(default,8, 3, 250);
+END;</entry>
+
+<entry key="Print_discounts">BEGIN
+    INSERT INTO Print_discounts VALUES(default,50,5);
+    INSERT INTO Print_discounts VALUES(default,100,10);
+    INSERT INTO Print_discounts VALUES(default,250,15);
+END;</entry>
+
+<entry key="Print_orders">BEGIN
+    INSERT INTO Print_orders VALUES(1,0);
+    INSERT INTO Print_orders VALUES(4,0);
+    INSERT INTO Print_orders VALUES(5,0);
+END;</entry>
+
+<entry key="Frames">BEGIN
+    INSERT INTO Frames VALUES(default, 1, 1, 2, 'IMG_7312.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 2, 3, 'IMG_7313.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 6, 3, 'IMG_7314.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 5, 1, 'IMG_7315.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 6, 3, 'IMG_7316.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 3, 3, 'IMG_7317.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 5, 1, 'IMG_7318.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 5, 1, 'IMG_7319.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 8, 2, 'IMG_7320.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 2, 3, 'IMG_7321.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 6, 1, 'IMG_7322.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 2, 1, 'IMG_7323.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 1, 2, 'IMG_7324.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 2, 1, 'IMG_7325.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 8, 3, 'IMG_7326.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 3, 2, 'IMG_7327.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 4, 1, 'IMG_7328.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 2, 1, 'IMG_7329.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 1, 1, 'IMG_7330.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 1, 1, 'IMG_7331.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 8, 2, 'IMG_7332.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 8, 1, 'IMG_7333.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 8, 1, 'IMG_7334.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 4, 1, 'IMG_7335.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 1, 1, 'IMG_7336.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 7, 3, 'IMG_7337.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 3, 1, 'IMG_7338.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 8, 1, 'IMG_7339.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 8, 1, 'IMG_7340.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 7, 1, 'IMG_7341.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 3, 3, 'IMG_7342.jpg', 2);
+    INSERT INTO Frames VALUES(default, 1, 3, 3, 'IMG_7343.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 9, 3, 'Sochi2020#1.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 2, 1, 'Sochi2020#2.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 9, 2, 'Sochi2020#3.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 1, 3, 'Sochi2020#4.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 2, 3, 'Sochi2020#5.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 4, 1, 'Sochi2020#6.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 4, 2, 'Sochi2020#7.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 7, 1, 'Sochi2020#8.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 6, 1, 'Sochi2020#9.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 1, 3, 'Sochi2020#10.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 7, 2, 'Sochi2020#11.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 9, 3, 'Sochi2020#12.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 1, 3, 'Sochi2020#13.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 7, 2, 'Sochi2020#14.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 6, 1, 'Sochi2020#15.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 3, 3, 'Sochi2020#16.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 8, 2, 'Sochi2020#17.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 6, 1, 'Sochi2020#18.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 8, 1, 'Sochi2020#19.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 8, 3, 'Sochi2020#20.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 3, 2, 'Sochi2020#21.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 6, 1, 'Sochi2020#22.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 4, 2, 'Sochi2020#23.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 1, 1, 'Sochi2020#24.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 8, 1, 'Sochi2020#25.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 1, 3, 'Sochi2020#26.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 8, 1, 'Sochi2020#27.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 7, 1, 'Sochi2020#28.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 2, 2, 'Sochi2020#29.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 6, 1, 'Sochi2020#30.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 8, 3, 'Sochi2020#31.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 5, 3, 'Sochi2020#32.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 7, 2, 'Sochi2020#33.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 2, 2, 'Sochi2020#34.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 9, 1, 'Sochi2020#35.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 2, 1, 'Sochi2020#36.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 4, 2, 'Sochi2020#37.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 1, 2, 'Sochi2020#38.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 6, 2, 'Sochi2020#39.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 5, 1, 'Sochi2020#40.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 7, 2, 'Sochi2020#41.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 1, 1, 'Sochi2020#42.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 9, 1, 'Sochi2020#43.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 5, 1, 'Sochi2020#44.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 1, 1, 'Sochi2020#45.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 9, 2, 'Sochi2020#46.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 5, 1, 'Sochi2020#47.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 5, 3, 'Sochi2020#48.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 4, 2, 'Sochi2020#49.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 1, 2, 'Sochi2020#50.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 7, 3, 'Sochi2020#51.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 6, 2, 'Sochi2020#52.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 5, 1, 'Sochi2020#53.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 3, 1, 'Sochi2020#54.jpg', 1);
+    INSERT INTO Frames VALUES(default, 4, 5, 2, 'Sochi2020#55.jpg', 1);
+    INSERT INTO Frames VALUES(default, 1, 6, 2, 'BurgerKing-flyer.png',230);
+END;</entry>
+
+<entry key="Developer_prices">BEGIN
+    INSERT INTO Developer_prices VALUES(default, 'Стандартная проявка', 500);
+END;</entry>
+
+<entry key="Developer_orders">BEGIN
+    INSERT INTO Developer_orders VALUES(2, 9);
+    INSERT INTO Developer_orders VALUES(3, 7);
+    INSERT INTO Developer_orders VALUES(10, 7);
+END;</entry>
+
+<entry key="Sale_orders">BEGIN
+    INSERT INTO Sale_orders VALUES(7, 14, 1);
+    INSERT INTO Sale_orders VALUES(9, 5, 2);
+    INSERT INTO Sale_orders VALUES(14, 20, 1);
+    INSERT INTO Sale_orders VALUES(13, 7, 10);
+END;</entry>
+
+
+</properties>

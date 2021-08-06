@@ -1,0 +1,98 @@
+model/Role.java
+ model.Role
+view/snapshots/common/Form.java
+ view.snapshots.common.Form
+view/components/panels/ListPanel.java
+ view.components.panels.ListPanel
+view/components/panels/table/ComboBoxEditor.java
+ view.components.panels.table.ComboBoxEditor
+model/properties/PropertyType.java
+ model.properties.PropertyType
+view/snapshots/FilteringEntryForm.java
+ view.snapshots.FilteringEntryForm
+view/components/panels/MenuPanel.java
+ view.components.panels.MenuPanel
+presenter/TitleConverter.java
+ presenter.TitleConverter
+view/components/frames/MainFrame.java
+ view.components.frames.MainFrame
+view/ClientGUI.java
+ view.ClientGUI
+ view.ClientGUI$1
+ view.ClientGUI$2
+ view.ClientGUI$3
+ view.ClientGUI$4
+ view.ClientGUI$5
+model/service/ServiceModel.java
+ model.service.ServiceModel
+model/service/ServiceInfo.java
+ model.service.ServiceInfo
+view/snapshots/TableData.java
+ view.snapshots.TableData
+Main.java
+ Main
+view/snapshots/EntryForm.java
+ view.snapshots.EntryForm
+view/snapshots/MainMenu.java
+ view.snapshots.MainMenu
+model/properties/PropertiesBundle.java
+ model.properties.PropertiesBundle
+model/properties/PropertyInfo.java
+ model.properties.PropertyInfo
+view/components/panels/ButtonsPanel.java
+ view.components.panels.ButtonsPanel
+model/database/DatabaseModel.java
+ model.database.DatabaseModel
+view/snapshots/LoginForm.java
+ view.snapshots.LoginForm
+view/components/panels/forms/SelectiveFormPanel.java
+ view.components.panels.forms.SelectiveFormPanel
+phs/DatabasePHS.java
+ phs.DatabasePHS
+phs/ServicePHS.java
+ phs.ServicePHS
+connectivity/DataAccessObject.java
+ connectivity.DataAccessObject
+view/snapshots/TablePresentation.java
+ view.snapshots.TablePresentation
+view/snapshots/ServerConfigMenu.java
+ view.snapshots.ServerConfigMenu
+presenter/Presenter.java
+ presenter.Presenter
+ presenter.Presenter$1
+presenter/ErrorHandler.java
+ presenter.ErrorHandler
+model/service/ServiceType.java
+ model.service.ServiceType
+model/queries/QueriesModel.java
+ model.queries.QueriesModel
+view/components/panels/forms/EntryFormPanel.java
+ view.components.panels.forms.EntryFormPanel
+model/properties/MappedPropertiesBundle.java
+ model.properties.MappedPropertiesBundle
+view/components/panels/table/ComboBoxRender.java
+ view.components.panels.table.ComboBoxRender
+connectivity/ConnectionProperties.java
+ connectivity.ConnectionProperties
+view/components/panels/table/SpinnerEditor.java
+ view.components.panels.table.SpinnerEditor
+view/IPresenter.java
+ view.IPresenter
+model/support/SupportElementsModel.java
+ model.support.SupportElementsModel
+view/snapshots/common/Selection.java
+ view.snapshots.common.Selection
+connectivity/SQLQueryCreator.java
+ connectivity.SQLQueryCreator
+phs/SupportElementsPHS.java
+ phs.SupportElementsPHS
+connectivity/DatabaseConnectivity.java
+ connectivity.DatabaseConnectivity
+phs/QueriesPHS.java
+ phs.QueriesPHS
+view/components/panels/table/TablePanel.java
+ view.components.panels.table.TablePanel
+ view.components.panels.table.TablePanel$1
+ view.components.panels.table.TablePanel$HeaderRenderer
+view/components/panels/ColumnsPanel.java
+ view.components.panels.ColumnsPanel

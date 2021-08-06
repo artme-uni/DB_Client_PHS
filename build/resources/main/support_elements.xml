@@ -1,0 +1,855 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+<entry key="related_outlets">
+CREATE OR REPLACE VIEW related_outlets AS
+    SELECT
+        RO.ID AS OUTLET_ID,
+        NAME AS OUTLET_TYPE,
+        CASE WHEN O.ID IS NULL THEN RO.ID
+            ELSE O.ID END AS RELATED_OUTLET_ID
+    FROM
+        OUTLETS O RIGHT JOIN
+        OUTLETS RO ON(RO.RELATED_OUTLET_ID = O.ID) JOIN
+        OUTLET_TYPES OT ON(RO.TYPE_ID = OT.ID)
+</entry>
+
+<entry key="orders_types">
+CREATE OR REPLACE VIEW orders_types AS
+    SELECT
+        ORDERS.ID AS ORDER_ID,
+        CASE
+            WHEN DO.ORDER_ID IS NOT NULL THEN 'Проявка фотопленки'
+            WHEN PO.ORDER_ID IS NOT NULL THEN 'Печать фотографий'
+            WHEN SALE.ORDER_ID IS NOT NULL THEN 'Продажа фототовара'
+            WHEN SO.ORDER_ID IS NOT NULL THEN 'Оказание фотоуслуг'
+        END as ORDER_TYPE
+    FROM
+        ORDERS
+        LEFT JOIN PRINT_ORDERS PO ON ORDERS.ID = PO.ORDER_ID
+        LEFT JOIN DEVELOPER_ORDERS DO on ORDERS.ID = DO.ORDER_ID
+        LEFT JOIN SALE_ORDERS SALE ON ORDERS.ID = SALE.ORDER_ID
+        LEFT JOIN SERVICE_ORDERS SO on ORDERS.ID = SO.ORDER_ID
+</entry>
+
+<entry key="is_paid_development">
+CREATE OR REPLACE FUNCTION is_paid_development(cur_order_id IN INT, cur_film_receipt_id IN INT)
+    RETURN INTEGER
+    AS
+        var_is_paid INT;
+        var_receipt_id INT;
+        sales_orders_count INT;
+    BEGIN
+    IF cur_film_receipt_id IS NULL THEN
+    RETURN 1;
+    end if;
+
+    SELECT RECEIPT_ID
+    INTO var_receipt_id
+    FROM ORDERS
+    WHERE ID = cur_order_id;
+
+    SELECT COUNT(*)
+    INTO sales_orders_count
+    FROM SALE_ORDERS
+    JOIN ORDERS ON SALE_ORDERS.ORDER_ID = ORDERS.ID
+    WHERE RECEIPT_ID = var_receipt_id;
+
+    IF sales_orders_count != 0 THEN
+    var_is_paid := 0;
+    ELSE
+    var_is_paid := 1;
+    end if;
+
+    RETURN var_is_paid;
+    END;
+</entry>
+
+<entry key="get_print_order_total">
+CREATE OR REPLACE FUNCTION get_print_order_total(cur_order_id IN INT)
+    RETURN NUMBER
+    AS
+        total INT;
+    BEGIN
+        SELECT SUM(PRICE * AMOUNT) AS PO_TOTAL
+        INTO total
+        FROM
+            FRAMES
+            JOIN PRINT_PRICES PP
+                ON (FRAMES.PAPER_SIZE_ID = PP.PAPER_SIZE_ID AND FRAMES.PAPER_TYPE_ID = PP.PAPER_TYPE_ID)
+    WHERE
+        PRINT_ORDER_ID = cur_order_id
+    GROUP BY
+        PRINT_ORDER_ID;
+
+        RETURN total;
+    END;
+</entry>
+
+<entry key="get_discounted_order_total">
+CREATE OR REPLACE FUNCTION get_discounted_order_total(cur_order_id IN INT)
+    RETURN NUMBER
+    AS
+        discount_rate NUMBER;
+    BEGIN
+        SELECT (100 - DISCOUNT) / 100
+        INTO discount_rate
+        FROM PRINT_ORDERS
+        WHERE ORDER_ID = cur_order_id;
+
+        RETURN get_print_order_total(cur_order_id) * discount_rate;
+    END;
+</entry>
+
+<entry key="get_developer_order_total">
+CREATE OR REPLACE FUNCTION get_developer_order_total(cur_developer_order_id IN INT)
+    RETURN NUMBER
+    AS
+    var_total INT;
+    var_receipt_id INT;
+    BEGIN
+    SELECT PRICE
+    INTO var_total
+    FROM DEVELOPER_PRICES
+    WHERE ID = 1;
+
+    SELECT FILM_RECEIPT_ID
+    INTO var_receipt_id
+    FROM DEVELOPER_ORDERS
+    WHERE ORDER_ID = cur_developer_order_id;
+
+    RETURN var_total * is_paid_development(cur_developer_order_id, var_receipt_id);
+    END;
+</entry>
+
+<entry key="clients_outlets">
+CREATE OR REPLACE VIEW clients_outlets AS
+    SELECT
+        CL.ID AS CLIENT_ID,
+        OUTLET_ID,
+        SUM (R.TOTAL) AS MONEY_SPENT
+    FROM
+        RECEIPTS R
+        JOIN CLIENTS CL on R.CLIENT_ID = CL.ID
+    GROUP BY
+        CL.ID,
+        OUTLET_ID
+</entry>
+
+<entry key="ORDERS_TOTALS">
+create or replace view ORDERS_TOTALS as
+    SELECT
+        ORDERS.ID AS ORDER_ID,
+        COALESCE(GET_DEVELOPER_ORDER_TOTAL(ORDERS.ID), 0) AS DEVELOPER_TOTAL,
+        COALESCE(GET_DISCOUNTED_ORDER_TOTAL(ORDERS.ID), 0) AS PRINT_TOTAL,
+        COALESCE(ST.PRICE, 0 ) AS SERVICE_TOTAL,
+        COALESCE(I.PRICE * SALE.AMOUNT, 0 ) AS SALE_TOTAL
+    FROM
+        ORDERS
+        LEFT JOIN SALE_ORDERS SALE ON ORDERS.ID = SALE.ORDER_ID
+        LEFT JOIN SERVICE_ORDERS SO ON ORDERS.ID = SO.ORDER_ID
+        LEFT JOIN SERVICE_TYPES ST ON SO.SERVICE_TYPE_ID = ST.ID
+        LEFT JOIN ITEMS I ON SALE.PRODUCT_ID = I.ID
+</entry>
+
+<entry key="update_order_discount">
+CREATE OR REPLACE PROCEDURE update_order_discount(cur_print_order_id IN INT, frames_amount IN INT)
+    IS
+    frames_count NUMBER;
+    var_discount INTEGER;
+    BEGIN
+        SELECT SUM(AMOUNT) AS PO_TOTAL
+        INTO  frames_count
+        FROM FRAMES
+        WHERE PRINT_ORDER_ID = cur_print_order_id
+        GROUP BY PRINT_ORDER_ID;
+
+        SELECT frames_count + frames_amount
+        INTO frames_count
+        FROM DUAL;
+
+        SELECT COALESCE(MAX(DISCOUNT), 0)
+        INTO var_discount
+        FROM PRINT_DISCOUNTS
+        WHERE PHOTO_AMOUNT &lt;= frames_count;
+
+        EXECUTE IMMEDIATE 'UPDATE PRINT_ORDERS SET DISCOUNT = ' || var_discount || ' WHERE ORDER_ID = ' || cur_print_order_id;
+    END;
+</entry>
+
+<entry key="update_items_count">
+CREATE OR REPLACE PROCEDURE update_items_count(cur_item_id IN INT, cur_outlet_id IN INT, delta IN INT)
+    IS
+    var_items_count INT;
+    BEGIN
+        SELECT BALANCE
+        INTO var_items_count
+        FROM STORAGE
+        WHERE ITEM_ID = cur_item_id AND OUTLET_ID = cur_outlet_id;
+
+        SELECT var_items_count + delta
+        INTO var_items_count
+        FROM DUAL;
+
+        EXECUTE IMMEDIATE 'UPDATE STORAGE SET BALANCE = '|| var_items_count ||
+            ' WHERE ITEM_ID = ' || cur_item_id ||
+            ' AND OUTLET_ID = ' || cur_outlet_id;
+    END;
+</entry>
+
+<entry key="update_receipt_total">
+CREATE OR REPLACE PROCEDURE update_receipt_total(cur_receipt_id IN INT)
+    IS
+    total INT;
+    BEGIN
+        SELECT SUM(developer_total + print_total + service_total + sale_total)
+        INTO total
+        FROM ORDERS_TOTALS JOIN ORDERS ON ORDERS_TOTALS.ORDER_ID = ORDERS.ID
+        WHERE RECEIPT_ID = cur_receipt_id
+        GROUP BY RECEIPT_ID;
+
+        EXECUTE IMMEDIATE 'UPDATE RECEIPTS SET TOTAL = ' || total || ' WHERE RECEIPTS.ID = ' || cur_receipt_id;
+    END;
+</entry>
+
+<entry key="related_outlet_tr">
+CREATE OR REPLACE TRIGGER related_outlet_tr
+    BEFORE INSERT OR UPDATE ON Outlets
+    FOR EACH ROW
+    BEGIN
+
+        IF :NEW.RELATED_OUTLET_ID IS NOT NULL AND :NEW.TYPE_ID = 1 THEN
+            raise_application_error(-20001, 'Филиал не может быть привязан к другому филиалу');
+        end if;
+
+        IF :NEW.RELATED_OUTLET_ID IS NULL AND :NEW.TYPE_ID != 1 THEN
+            raise_application_error(-20002, 'Торговая точка должна быть привязана к филиалу');
+        end if;
+    END;
+</entry>
+
+<entry key="urgent_orders_tr">
+CREATE OR REPLACE TRIGGER urgent_orders_tr
+    BEFORE INSERT OR UPDATE ON ORDERS
+    FOR EACH ROW
+    DECLARE
+        outlet_type_id INT;
+    BEGIN
+        SELECT OUTLETS.TYPE_ID
+        INTO outlet_type_id
+        FROM
+            RECEIPTS
+            JOIN OUTLETS ON RECEIPTS.OUTLET_ID = OUTLETS.ID
+        WHERE
+            RECEIPTS.ID = :NEW.RECEIPT_ID;
+
+        IF (outlet_type_id != 2 AND outlet_type_id != 3) AND (:NEW.IS_URGENT = 1) THEN
+            raise_application_error(-20003, 'Срочные заказы могут быть приняты только в киоске или магазине');
+        end if;
+    END;
+</entry>
+
+<entry key="service_orders_outlet_tr">
+CREATE OR REPLACE TRIGGER service_orders_outlet_tr
+    BEFORE INSERT OR UPDATE ON SERVICE_ORDERS
+    FOR EACH ROW
+    DECLARE
+        outlet_type_id INT;
+    BEGIN
+        SELECT OUTLETS.TYPE_ID
+        INTO outlet_type_id
+        FROM
+            ORDERS
+            JOIN RECEIPTS ON ORDERS.RECEIPT_ID = RECEIPTS.ID
+            JOIN OUTLETS ON RECEIPTS.OUTLET_ID = OUTLETS.ID
+        WHERE
+            ORDERS.ID = :NEW.ORDER_ID;
+
+        IF (outlet_type_id != 3) THEN
+            raise_application_error(-20004, 'Заказы на дополнительные услуги принимаются исключительно в фотомагазинах');
+        end if;
+    END;
+</entry>
+
+<entry key="print_orders_outlet_tr">
+CREATE OR REPLACE TRIGGER print_orders_outlet_tr
+    BEFORE INSERT OR UPDATE ON PRINT_ORDERS
+    FOR EACH ROW
+    DECLARE
+        outlet_type_id INT;
+    BEGIN
+        SELECT OUTLETS.TYPE_ID
+        INTO outlet_type_id
+        FROM
+            ORDERS
+            JOIN RECEIPTS ON ORDERS.RECEIPT_ID = RECEIPTS.ID
+            JOIN OUTLETS ON RECEIPTS.OUTLET_ID = OUTLETS.ID
+        WHERE
+            ORDERS.ID = :NEW.ORDER_ID;
+
+        IF (outlet_type_id != 1 AND outlet_type_id != 2) THEN
+            raise_application_error(-20005, 'Заказы на печать принимаются исключительно в филиалах или киосках');
+        end if;
+    END;
+</entry>
+
+<entry key="print_orders_storage_tr">
+CREATE OR REPLACE TRIGGER print_orders_storage_tr
+    BEFORE INSERT OR UPDATE ON FRAMES
+    FOR EACH ROW
+    DECLARE
+        var_outlet_id INT;
+    BEGIN
+        SELECT OUTLET_ID
+        INTO var_outlet_id
+        FROM ORDERS JOIN RECEIPTS R on R.ID = ORDERS.RECEIPT_ID
+        WHERE ORDERS.ID = :new.PRINT_ORDER_ID;
+
+        UPDATE_ITEMS_COUNT(:NEW.PAPER_TYPE_ID, var_outlet_id, -1 * :NEW.AMOUNT);
+    END;
+</entry>
+
+<entry key="print_orders_storage_del_tr">
+CREATE OR REPLACE TRIGGER print_orders_storage_del_tr
+    AFTER DELETE ON FRAMES
+    FOR EACH ROW
+    DECLARE
+        var_outlet_id INT;
+    BEGIN
+        SELECT OUTLET_ID
+        INTO var_outlet_id
+        FROM ORDERS JOIN RECEIPTS R on R.ID = ORDERS.RECEIPT_ID
+        WHERE ORDERS.ID = :OLD.PRINT_ORDER_ID;
+
+
+        UPDATE_ITEMS_COUNT(:OLD.PAPER_TYPE_ID, var_outlet_id, :OLD.AMOUNT);
+    END;
+</entry>
+
+<entry key="developer_orders_outlet_tr">
+CREATE OR REPLACE TRIGGER developer_orders_outlet_tr
+    BEFORE INSERT OR UPDATE ON DEVELOPER_ORDERS
+    FOR EACH ROW
+    DECLARE
+        outlet_type_id INT;
+    BEGIN
+        SELECT OUTLETS.TYPE_ID
+        INTO outlet_type_id
+        FROM
+            ORDERS
+            JOIN RECEIPTS ON ORDERS.RECEIPT_ID = RECEIPTS.ID
+            JOIN OUTLETS ON RECEIPTS.OUTLET_ID = OUTLETS.ID
+        WHERE
+            ORDERS.ID = :NEW.ORDER_ID;
+
+        IF (outlet_type_id != 1 AND outlet_type_id != 2) THEN
+            raise_application_error(-20006, 'Заказы на проявку принимаются исключительно в филиалах или киосках');
+        end if;
+    END;
+</entry>
+
+<entry key="developer_orders_storage_tr">
+CREATE OR REPLACE TRIGGER developer_orders_storage_tr
+    BEFORE INSERT OR UPDATE ON DEVELOPER_ORDERS
+    FOR EACH ROW
+    DECLARE
+        var_outlet_id INT;
+    BEGIN
+        SELECT OUTLET_ID
+        INTO var_outlet_id
+        FROM ORDERS JOIN RECEIPTS R on R.ID = ORDERS.RECEIPT_ID
+        WHERE ORDERS.ID = :new.ORDER_ID;
+
+        UPDATE_ITEMS_COUNT(9, var_outlet_id, -1);
+    END;
+</entry>
+
+<entry key="dev_orders_storage_del_tr">
+CREATE OR REPLACE TRIGGER dev_orders_storage_del_tr
+    BEFORE DELETE ON DEVELOPER_ORDERS
+    FOR EACH ROW
+    DECLARE
+        var_outlet_id INT;
+    BEGIN
+        SELECT OUTLET_ID
+        INTO var_outlet_id
+        FROM ORDERS JOIN RECEIPTS R on R.ID = ORDERS.RECEIPT_ID
+        WHERE ORDERS.ID = :old.ORDER_ID;
+
+        UPDATE_ITEMS_COUNT(9, var_outlet_id, 1);
+    END;
+</entry>
+
+<entry key="sale_orders_outlet_tr">
+CREATE OR REPLACE TRIGGER sale_orders_outlet_tr
+    BEFORE INSERT OR UPDATE ON SALE_ORDERS
+    FOR EACH ROW
+    DECLARE
+        outlet_type_id INT;
+    BEGIN
+        SELECT OUTLETS.TYPE_ID
+        INTO outlet_type_id
+        FROM
+            ORDERS
+            JOIN RECEIPTS ON ORDERS.RECEIPT_ID = RECEIPTS.ID
+            JOIN OUTLETS ON RECEIPTS.OUTLET_ID = OUTLETS.ID
+        WHERE
+            ORDERS.ID = :NEW.ORDER_ID;
+
+        IF (outlet_type_id != 3 AND outlet_type_id != 2) THEN
+            raise_application_error(-20007, 'Продажа фототоваров осуществляется исключительно в фотомагаизнах или киосках');
+        end if;
+    END;
+</entry>
+
+<entry key="sale_orders_items_tr">
+CREATE OR REPLACE TRIGGER sale_orders_items_tr
+    BEFORE INSERT OR UPDATE ON SALE_ORDERS
+    FOR EACH ROW
+    DECLARE
+        var_item_price INT;
+    BEGIN
+        SELECT PRICE
+        into var_item_price
+        FROM ITEMS
+        WHERE ID = :new.PRODUCT_ID;
+
+        IF var_item_price IS NULL THEN
+            raise_application_error(-20008, 'Выбранный товар не для продажи');
+        end if;
+    END;
+</entry>
+
+<entry key="sale_orders_storage_tr">
+CREATE OR REPLACE TRIGGER sale_orders_storage_tr
+    BEFORE INSERT OR UPDATE ON SALE_ORDERS
+    FOR EACH ROW
+    DECLARE
+        var_outlet_id INT;
+    BEGIN
+        SELECT OUTLET_ID
+        INTO var_outlet_id
+        FROM ORDERS JOIN RECEIPTS R on R.ID = ORDERS.RECEIPT_ID
+        WHERE ORDERS.ID = :new.ORDER_ID;
+
+        UPDATE_ITEMS_COUNT(:NEW.PRODUCT_ID, var_outlet_id, -1 * :NEW.AMOUNT);
+    END;
+</entry>
+
+<entry key="sale_orders_storage_del_tr">
+CREATE OR REPLACE TRIGGER sale_orders_storage_del_tr
+    BEFORE DELETE ON SALE_ORDERS
+    FOR EACH ROW
+    DECLARE
+        var_outlet_id INT;
+    BEGIN
+        SELECT OUTLET_ID
+        INTO var_outlet_id
+        FROM ORDERS JOIN RECEIPTS R on R.ID = ORDERS.RECEIPT_ID
+        WHERE ORDERS.ID = :OLD.ORDER_ID;
+
+        UPDATE_ITEMS_COUNT(:OLD.PRODUCT_ID, var_outlet_id, :OLD.AMOUNT);
+    END;
+</entry>
+
+<entry key="delivery_vendor_tr">
+CREATE OR REPLACE TRIGGER delivery_vendor_tr
+    BEFORE INSERT OR UPDATE ON DELIVERIES
+    FOR EACH ROW
+
+    DECLARE
+        is_valid_vendor INT;
+    BEGIN
+        SELECT COUNT(*)
+        INTO is_valid_vendor
+        FROM VENDOR_ITEMS
+        WHERE VENDOR_ITEMS.VENDOR_ID = :NEW.VENDOR_ID;
+
+        IF is_valid_vendor = 0 THEN
+            RAISE_APPLICATION_ERROR(-20009, 'Выбранный продавец не осуществляет поставки данного товара');
+        end if;
+    END;
+</entry>
+
+<entry key="delivery_storage_tr">
+CREATE OR REPLACE TRIGGER delivery_storage_tr
+    BEFORE INSERT OR UPDATE ON DELIVERIES
+    FOR EACH ROW
+    BEGIN
+        UPDATE_ITEMS_COUNT(:NEW.ITEM_ID, :NEW.OUTLET_ID, :NEW.AMOUNT);
+    END;
+</entry>
+
+<entry key="delivery_storage_del_tr">
+CREATE OR REPLACE TRIGGER delivery_storage_del_tr
+    BEFORE DELETE ON DELIVERIES
+    FOR EACH ROW
+    BEGIN
+        UPDATE_ITEMS_COUNT(:OLD.ITEM_ID, :OLD.OUTLET_ID, -1 * :OLD.AMOUNT);
+    END;
+</entry>
+
+<entry key="Clients_seq">
+CREATE SEQUENCE Clients_seq START WITH 1
+</entry>
+
+<entry key="Drop_Clients_seq">
+DROP SEQUENCE Clients_seq
+</entry>
+
+<entry key="Clients_id_tr">
+CREATE OR REPLACE TRIGGER Clients_id_tr
+    BEFORE INSERT ON Clients
+    FOR EACH ROW
+    BEGIN
+        SELECT Clients_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Outlet_types_seq">
+CREATE SEQUENCE Outlet_types_seq START WITH 1
+</entry>
+
+<entry key="Drop_Outlet_types_seq">
+DROP SEQUENCE Outlet_types_seq
+</entry>
+
+<entry key="Outlet_types_id_tr">
+CREATE OR REPLACE TRIGGER Outlet_types_id_tr
+    BEFORE INSERT ON Outlet_types
+    FOR EACH ROW
+    BEGIN
+        SELECT Outlet_types_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Outlets_seq">
+CREATE SEQUENCE Outlets_seq START WITH 1
+</entry>
+
+<entry key="Drop_Outlets_seq">
+DROP SEQUENCE Outlets_seq
+</entry>
+
+<entry key="Outlets_id_tr">
+CREATE OR REPLACE TRIGGER Outlets_id_tr
+    BEFORE INSERT ON Outlets
+    FOR EACH ROW
+    BEGIN
+        SELECT Outlets_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Professions_seq">
+CREATE SEQUENCE Professions_seq START WITH 1
+</entry>
+
+<entry key="Drop_Professions_seq">
+DROP SEQUENCE Professions_seq
+</entry>
+
+<entry key="Professions_id_tr">
+CREATE OR REPLACE TRIGGER Professions_id_tr
+    BEFORE INSERT ON Professions
+    FOR EACH ROW
+    BEGIN
+        SELECT Professions_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Jobs_seq">
+CREATE SEQUENCE Jobs_seq START WITH 1
+</entry>
+
+<entry key="Drop_Jobs_seq">
+DROP SEQUENCE Jobs_seq
+</entry>
+
+<entry key="Jobs_id_tr">
+CREATE OR REPLACE TRIGGER Jobs_id_tr
+    BEFORE INSERT ON Jobs
+    FOR EACH ROW
+    BEGIN
+        SELECT Jobs_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Firms_seq">
+CREATE SEQUENCE Firms_seq START WITH 1
+</entry>
+
+<entry key="Drop_Firms_seq">
+DROP SEQUENCE Firms_seq
+</entry>
+
+<entry key="Firms_id_tr">
+CREATE OR REPLACE TRIGGER Firms_id_tr
+    BEFORE INSERT ON Firms
+    FOR EACH ROW
+    BEGIN
+        SELECT Firms_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Items_seq">
+CREATE SEQUENCE Items_seq START WITH 1
+</entry>
+
+<entry key="Drop_Items_seq">
+DROP SEQUENCE Items_seq
+</entry>
+
+<entry key="Items_id_tr">
+CREATE OR REPLACE TRIGGER Items_id_tr
+    BEFORE INSERT ON Items
+    FOR EACH ROW
+    BEGIN
+        SELECT Items_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Storage_seq">
+CREATE SEQUENCE Storage_seq START WITH 1
+</entry>
+
+<entry key="Drop_Storage_seq">
+DROP SEQUENCE Storage_seq
+</entry>
+
+<entry key="Storage_id_tr">
+CREATE OR REPLACE TRIGGER Storage_id_tr
+    BEFORE INSERT ON Storage
+    FOR EACH ROW
+    BEGIN
+        SELECT Storage_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Vendors_seq">
+CREATE SEQUENCE Vendors_seq START WITH 1
+</entry>
+
+<entry key="Drop_Vendors_seq">
+DROP SEQUENCE Vendors_seq
+</entry>
+
+<entry key="Vendors_id_tr">
+CREATE OR REPLACE TRIGGER Vendors_id_tr
+    BEFORE INSERT ON Vendors
+    FOR EACH ROW
+    BEGIN
+        SELECT Vendors_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Deliveries_seq">
+CREATE SEQUENCE Deliveries_seq START WITH 1
+</entry>
+
+<entry key="Drop_Deliveries_seq">
+DROP SEQUENCE Deliveries_seq
+</entry>
+
+<entry key="Deliveries_id_tr">
+CREATE OR REPLACE TRIGGER Deliveries_id_tr
+    BEFORE INSERT ON Deliveries
+    FOR EACH ROW
+    BEGIN
+        SELECT Deliveries_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Receipts_seq">
+CREATE SEQUENCE Receipts_seq START WITH 1
+</entry>
+
+<entry key="Drop_Receipts_seq">
+DROP SEQUENCE Receipts_seq
+</entry>
+
+<entry key="Receipts_id_tr">
+CREATE OR REPLACE TRIGGER Receipts_id_tr
+    BEFORE INSERT ON Receipts
+    FOR EACH ROW
+    BEGIN
+        SELECT Receipts_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Orders_seq">
+CREATE SEQUENCE Orders_seq START WITH 1
+</entry>
+
+<entry key="Drop_Orders_seq">
+DROP SEQUENCE Orders_seq
+</entry>
+
+<entry key="Orders_id_tr">
+CREATE OR REPLACE TRIGGER Orders_id_tr
+    BEFORE INSERT ON Orders
+    FOR EACH ROW
+    BEGIN
+        SELECT Orders_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Service_types_seq">
+CREATE SEQUENCE Service_types_seq START WITH 1
+</entry>
+
+<entry key="Drop_Service_types_seq">
+DROP SEQUENCE Service_types_seq
+</entry>
+
+<entry key="Service_types_id_tr">
+CREATE OR REPLACE TRIGGER Service_types_id_tr
+    BEFORE INSERT ON Service_types
+    FOR EACH ROW
+    BEGIN
+        SELECT Service_types_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Paper_sizes_seq">
+CREATE SEQUENCE Paper_sizes_seq START WITH 1
+</entry>
+
+<entry key="Drop_Paper_sizes_seq">
+DROP SEQUENCE Paper_sizes_seq
+</entry>
+
+<entry key="Paper_sizes_id_tr">
+CREATE OR REPLACE TRIGGER Paper_sizes_id_tr
+    BEFORE INSERT ON Paper_sizes
+    FOR EACH ROW
+    BEGIN
+    SELECT Paper_sizes_seq.nextval
+    INTO :new.ID
+    FROM dual;
+    END;
+</entry>
+
+<entry key="Paper_types_seq">
+CREATE SEQUENCE Paper_types_seq START WITH 1
+</entry>
+
+<entry key="Drop_Paper_types_seq">
+DROP SEQUENCE Paper_types_seq
+</entry>
+
+<entry key="Paper_types_id_tr">
+CREATE OR REPLACE TRIGGER Paper_types_id_tr
+    BEFORE INSERT ON Paper_types
+    FOR EACH ROW
+    BEGIN
+        SELECT Paper_types_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Print_prices_seq">
+CREATE SEQUENCE Print_prices_seq START WITH 1
+</entry>
+
+<entry key="Drop_Print_prices_seq">
+DROP SEQUENCE Print_prices_seq
+</entry>
+
+<entry key="Print_prices_id_tr">
+CREATE OR REPLACE TRIGGER Print_prices_id_tr
+    BEFORE INSERT ON Print_prices
+    FOR EACH ROW
+    BEGIN
+        SELECT Print_prices_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Print_discounts_seq">
+CREATE SEQUENCE Print_discounts_seq START WITH 1
+</entry>
+
+<entry key="Drop_Print_discounts_seq">
+DROP SEQUENCE Print_discounts_seq
+</entry>
+
+<entry key="Print_discounts_id_tr">
+CREATE OR REPLACE TRIGGER Print_discounts_id_tr
+    BEFORE INSERT ON Print_discounts
+    FOR EACH ROW
+    BEGIN
+        SELECT Print_discounts_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Frames_seq">
+CREATE SEQUENCE Frames_seq START WITH 1
+</entry>
+
+<entry key="Drop_Frames_seq">
+DROP SEQUENCE Frames_seq
+</entry>
+
+<entry key="Frames_id_tr">
+CREATE OR REPLACE TRIGGER Frames_id_tr
+    BEFORE INSERT ON Frames
+    FOR EACH ROW
+    BEGIN
+        SELECT Frames_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+<entry key="Developer_prices_seq">
+CREATE SEQUENCE Developer_prices_seq START WITH 1
+</entry>
+
+<entry key="Drop_Developer_prices_seq">
+DROP SEQUENCE Developer_prices_seq
+</entry>
+
+<entry key="Developer_prices_id_tr">
+CREATE OR REPLACE TRIGGER Developer_prices_id_tr
+    BEFORE INSERT ON Developer_prices
+    FOR EACH ROW
+    BEGIN
+        SELECT Developer_prices_seq.nextval
+        INTO :new.ID
+        FROM dual;
+    END;
+</entry>
+
+</properties>

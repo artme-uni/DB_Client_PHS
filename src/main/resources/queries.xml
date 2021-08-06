@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+<entry key="1. Перечень пунктов приема заказов">SELECT
+    O.ID AS OUTLET_ID,
+    NAME AS TYPE,
+    ADDRESS,
+    RO.RELATED_OUTLET_ID
+FROM
+    OUTLETS O
+    JOIN OUTLET_TYPES OT ON O.TYPE_ID = OT.ID
+    JOIN RELATED_OUTLETS RO on O.ID = RO.OUTLET_ID
+WHERE
+    NAME IN (:outlet_types) AND
+    RO.RELATED_OUTLET_ID = :related_outlet_id
+ORDER BY
+    NAME</entry>
+
+<entry key="2. Перечень всех заказов">SELECT
+    ORDERS.ID AS ORDER_ID,
+    ORD_T.ORDER_TYPE,
+    RO.RELATED_OUTLET_ID,
+    O.ADDRESS,
+    OUT_T.NAME AS OUTLET_TYPE,
+    R.Creation_date AS ORDER_DATE
+FROM
+    ORDERS
+    JOIN ORDERS_TYPES ORD_T ON ORDERS.ID = ORD_T.ORDER_ID
+    JOIN RECEIPTS R on ORDERS.RECEIPT_ID = R.ID
+    JOIN OUTLETS O on R.OUTLET_ID = O.ID
+    JOIN OUTLET_TYPES OUT_T on O.TYPE_ID = OUT_T.ID
+    JOIN RELATED_OUTLETS RO on O.ID = RO.OUTLET_ID
+WHERE
+    R.Creation_date >= :start_date AND
+    R.Creation_date &lt;= :end_date AND
+    OUT_T.NAME IN (:outlet_types) AND
+    RO.RELATED_OUTLET_ID = :related_outlet_id
+ORDER BY
+    ORDER_TYPE, O.ID</entry>
+
+<entry key="3. Перечень заказов на отдельные виды фоторабот">SELECT
+    ORDERS.ID AS ORDER_ID,
+    IS_URGENT,
+    ORD_T.ORDER_TYPE,
+    RO.RELATED_OUTLET_ID,
+    O.ADDRESS,
+    R.Creation_date AS ORDER_DATE
+FROM
+    ORDERS
+    JOIN ORDERS_TYPES ORD_T ON ORDERS.ID = ORD_T.ORDER_ID
+    JOIN RECEIPTS R on ORDERS.RECEIPT_ID = R.ID
+    JOIN OUTLETS O on R.OUTLET_ID = O.ID
+    JOIN RELATED_OUTLETS RO on O.ID = RO.OUTLET_ID
+WHERE
+    R.Creation_date >= :start_date AND
+    R.Creation_date &lt;= :end_date AND
+    RO.RELATED_OUTLET_ID = :related_outlet_id AND
+    IS_URGENT = :is_urgen AND
+    ORD_T.ORDER_TYPE IN (:order_types)
+ORDER BY
+    ORDER_TYPE, O.ID</entry>
+
+<entry key="4. Сумма выручки с заказов">SELECT
+    SUM (DEVELOPER_TOTAL + PRINT_TOTAL + SERVICE_TOTAL + SALE_TOTAL) AS TOTAL
+FROM
+    ORDERS
+    JOIN ORDERS_TOTALS ON ORDERS.ID = ORDERS_TOTALS.ORDER_ID
+    JOIN RECEIPTS R ON ORDERS.RECEIPT_ID = R.ID
+    JOIN OUTLETS ON R.OUTLET_ID = OUTLETS.ID
+    JOIN OUTLET_TYPES OT on OUTLETS.TYPE_ID = OT.ID
+    JOIN ORDERS_TYPES on ORDERS.ID = ORDERS_TYPES.ORDER_ID
+WHERE
+    R.Creation_date >= :start_date AND
+    R.Creation_date &lt;= :end_date AND
+    ORDERS.IS_URGENT = :is_urgent AND
+    R.OUTLET_ID = :outlet_id AND
+    OT.NAME IN (:outlet_types) AND
+    ORDERS_TYPES.ORDER_TYPE IN (:order_types)</entry>
+
+<entry key="5. Количество отпечатанных фотографий">SELECT
+    COALESCE(SUM(AMOUNT), 0) AS FRAME_COUNT
+FROM
+    FRAMES
+    JOIN PRINT_ORDERS PO ON FRAMES.PRINT_ORDER_ID = PO.ORDER_ID
+    JOIN ORDERS ON PO.ORDER_ID = ORDERS.ID
+    JOIN RECEIPTS R ON ORDER_ID = R.ID
+    JOIN OUTLETS O ON R.OUTLET_ID = O.ID
+    JOIN RELATED_OUTLETS RO ON O.ID = RO.OUTLET_ID
+WHERE
+    R.Creation_date >= :start_date AND
+    R.Creation_date &lt;= :end_date AND
+    O.ID = :outlet_id AND
+    RO.OUTLET_ID = :related_outlet_id AND
+    IS_URGENT = :is_urgent</entry>
+
+<entry key="6. Количество проявленных фотопленок">SELECT
+    COALESCE(COUNT(*), 0) AS FILM_COUNT
+FROM
+    DEVELOPER_ORDERS DO
+    JOIN ORDERS ON DO.ORDER_ID = ORDERS.ID
+    JOIN RECEIPTS R ON ORDER_ID = R.ID
+    JOIN OUTLETS O ON R.OUTLET_ID = O.ID
+    JOIN RELATED_OUTLETS RO ON O.ID = RO.OUTLET_ID
+WHERE
+    R.Creation_date >= :start_date AND
+    R.Creation_date &lt;= :end_date AND
+    O.ID = :outlet_id AND
+    RO.OUTLET_ID = :related_outlet_id AND
+    IS_URGENT = :is_urgent</entry>
+
+<entry key="7. Перечень поставщиков">WITH VENDORS_INFO AS (
+    SELECT
+        V.ID AS VENDOR_ID,
+        NAME AS VENDOR_NAME,
+        COUNT(*) AS DELIVERIES_COUNT,
+        SUM(AMOUNT) AS ITEMS_COUNT
+    FROM
+        VENDORS V
+        JOIN VENDOR_ITEMS VI ON (VI.VENDOR_ID=V.ID)
+        JOIN ITEMS ON (VI.ITEM_ID = ITEMS.ID)
+        JOIN DELIVERIES D ON (V.ID= D.VENDOR_ID AND ITEMS.ID = D.ITEM_ID)
+    WHERE
+        DELIVERY_DATE >= :start_date AND
+        DELIVERY_DATE &lt;= :end_date
+    GROUP BY
+        V.ID, NAME)
+
+SELECT
+    VENDOR_ID,
+    VENDOR_NAME,
+    DELIVERIES_COUNT,
+    ITEMS_COUNT
+FROM
+    VENDORS_INFO
+WHERE
+    DELIVERIES_COUNT > :min_deliveries_count AND
+    ITEMS_COUNT > :min_items_count</entry>
+
+<entry key="8. Список клиентов">WITH CLIENTS_INFO AS(
+    SELECT
+        CLIENTS.ID,
+        SUM (CO.MONEY_SPENT) AS MONEY_SPENT
+    FROM
+        CLIENTS
+        LEFT JOIN CLIENTS_OUTLETS CO ON CLIENTS.ID = CO.CLIENT_ID
+    WHERE
+        CO.OUTLET_ID = :outlet_id
+    GROUP BY
+        CLIENTS.ID)
+
+SELECT
+    CL.ID,
+    FIRST_NAME,
+    SECOND_NAME,
+    MIDDLE_NAME,
+    DISCOUNT,
+    MONEY_SPENT
+FROM
+    CLIENTS_INFO
+    JOIN CLIENTS CL ON CL.ID = CLIENTS_INFO.ID
+WHERE
+    DISCOUNT > :min_discount AND
+    MONEY_SPENT > :min_orders_total</entry>
+
+<entry key="9. Сумма выручки от реализации фототоваров">SELECT
+    SUM (SALE_TOTAL) AS TOTAL
+FROM
+    ORDERS
+    JOIN ORDERS_TOTALS ON ORDERS.ID = ORDERS_TOTALS.ORDER_ID
+    JOIN RECEIPTS R ON ORDERS.RECEIPT_ID = R.ID
+    JOIN RELATED_OUTLETS RO on R.OUTLET_ID = RO.OUTLET_ID
+WHERE
+    R.Creation_date >= :start_date AND
+    R.Creation_date &lt;= :end_date AND
+    RO.RELATED_OUTLET_ID = :related_outlet_id</entry>
+
+<entry key="10. Перечень фототоваров с наибольшим спросом">WITH ITEMS_POPULARITY AS (
+    SELECT
+        I.ID,
+        I.PRODUCT_NAME,
+        COUNT(*) AS SALES_COUNT
+    FROM
+        SALE_ORDERS SO
+        JOIN ORDERS ON SO.ORDER_ID = ORDERS.ID
+        JOIN RECEIPTS R on R.ID = ORDERS.RECEIPT_ID
+        JOIN RELATED_OUTLETS RO ON RO.OUTLET_ID = R.OUTLET_ID
+        JOIN ITEMS I on I.ID = SO.PRODUCT_ID
+        JOIN FIRMS F on I.FIRM_ID = F.ID
+    WHERE
+        RO.RELATED_OUTLET_ID = :related_outlet_id
+    GROUP BY
+        I.ID, I.PRODUCT_NAME)
+
+SELECT
+    ID,
+    PRODUCT_NAME,
+    SALES_COUNT
+FROM
+    ITEMS_POPULARITY
+WHERE
+    SALES_COUNT = (SELECT MAX(SALES_COUNT) FROM ITEMS_POPULARITY)</entry>
+
+<entry key="11. Объемы реализации фототоваров">WITH ITEMS_POPULARITY AS (
+    SELECT
+        I.ID,
+        I.PRODUCT_NAME,
+        COUNT(*) AS SALES_COUNT
+    FROM
+        SALE_ORDERS SO
+        JOIN ORDERS ON SO.ORDER_ID = ORDERS.ID
+        JOIN RECEIPTS R on R.ID = ORDERS.RECEIPT_ID
+        JOIN RELATED_OUTLETS RO ON RO.OUTLET_ID = R.OUTLET_ID
+        JOIN ITEMS I on I.ID = SO.PRODUCT_ID
+        JOIN FIRMS F on I.FIRM_ID = F.ID
+    WHERE
+        R.Creation_date >= :start_date AND
+        R.Creation_date &lt;= :end_date AND
+        RO.RELATED_OUTLET_ID = :related_outlet_id
+    GROUP BY
+        I.ID, I.PRODUCT_NAME)
+
+SELECT
+    I.ID,
+    I.PRODUCT_NAME,
+    COALESCE(SALES_COUNT, 0) AS SALES_COUNT
+FROM
+    ITEMS I
+    LEFT JOIN ITEMS_POPULARITY IP ON IP.ID = I.ID</entry>
+
+<entry key="12. Перечень рабочих мест">SELECT
+    JOBS.ID,
+    P.ID AS PROFESSION_ID,
+    OUTLET_ID,
+    AMOUNT
+FROM
+    JOBS
+    JOIN PROFESSIONS P on JOBS.PROFESSION_ID = P.ID
+WHERE
+    PROFESSION_ID IN (:profession_id)
+ORDER BY
+    PROFESSION_ID</entry>
+
+</properties>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+<entry key="Clients">CREATE TABLE Clients (
+    ID INT PRIMARY KEY,
+    Second_name VARCHAR2(50) NOT NULL,
+    First_name VARCHAR2(50) NOT NULL,
+    Middle_name VARCHAR2(50) NOT NULL,
+    Is_Professional INT DEFAULT 0 CHECK (Is_Professional IN (0,1)) NOT NULL,
+    Discount INT DEFAULT 0 CHECK (Discount >= 0 AND Discount &lt;= 100) NOT NULL)</entry>
+
+<entry key="Outlet_types">CREATE TABLE Outlet_types (
+    ID INT PRIMARY KEY,
+    Name VARCHAR2(200) UNIQUE NOT NULL)</entry>
+
+<entry key="Outlets">CREATE TABLE Outlets (
+    ID INT PRIMARY KEY,
+    Type_ID INT NOT NULL REFERENCES Outlet_types(ID),
+    Related_outlet_ID INT REFERENCES Outlets(ID),
+    Address VARCHAR2(200) NOT NULL,
+    CONSTRAINT Unique_set_outlets UNIQUE (Type_ID, Address))</entry>
+
+<entry key="Professions">CREATE TABLE Professions (
+    ID INT PRIMARY KEY,
+    Profession VARCHAR2(200) UNIQUE NOT NULL)</entry>
+
+<entry key="Jobs">CREATE TABLE Jobs (
+    ID INT PRIMARY KEY,
+    Outlet_ID INT NOT NULL REFERENCES Outlets(ID),
+    Profession_ID INT NOT NULL REFERENCES Professions(ID),
+    Amount INT DEFAULT 1 CHECK(Amount >= 0) NOT NULL,
+    CONSTRAINT Unique_set_jobs UNIQUE (Outlet_ID, Profession_ID))</entry>
+
+<entry key="Firms">CREATE TABLE Firms (
+    ID INT PRIMARY KEY,
+    Name VARCHAR2(100) UNIQUE NOT NULL)</entry>
+
+<entry key="Items">CREATE TABLE Items (
+    ID INT PRIMARY KEY,
+    Firm_ID INT NOT NULL REFERENCES Firms(ID),
+    Product_name VARCHAR2(100) NOT NULL,
+    Price NUMBER(15, 2) CHECK(Price >= 0),
+    CONSTRAINT Unique_set_items UNIQUE (Firm_ID, Product_name))</entry>
+
+<entry key="Storage">CREATE TABLE Storage (
+    ID INT PRIMARY KEY,
+    Outlet_ID INT NOT NULL REFERENCES Outlets(ID),
+    Item_ID INT NOT NULL REFERENCES Items(ID),
+    Balance INT DEFAULT 0 NOT NULL CHECK(Balance >= 0),
+    CONSTRAINT Unique_set_storage UNIQUE (Outlet_ID, Item_ID))</entry>
+
+<entry key="Vendors">CREATE TABLE Vendors (
+    ID INT PRIMARY KEY,
+    Name VARCHAR2(100) UNIQUE NOT NULL)</entry>
+
+<entry key="Vendor_Items">CREATE TABLE Vendor_Items (
+    Vendor_ID INT NOT NULL REFERENCES Vendors(ID),
+    Item_ID INT NOT NULL REFERENCES Items(ID),
+    CONSTRAINT Unique_set_ven_items UNIQUE (Vendor_ID, Item_ID))</entry>
+
+<entry key="Deliveries">CREATE TABLE Deliveries (
+    ID INT PRIMARY KEY,
+    Outlet_ID INT NOT NULL REFERENCES Outlets(ID),
+    Item_ID INT NOT NULL REFERENCES Items(ID),
+    Vendor_ID INT NOT NULL REFERENCES Vendors(ID),
+    Amount INT NOT NULL CHECK(Amount > 0),
+    Delivery_Date DATE NOT NULL,
+    Purchase_price NUMBER(15, 2) CHECK(Purchase_price >= 0))</entry>
+
+<entry key="Receipts">CREATE TABLE Receipts (
+    ID INT PRIMARY KEY ,
+    Client_ID INT NOT NULL REFERENCES Clients(ID),
+    Outlet_ID INT NOT NULL REFERENCES Outlets(ID),
+    Creation_date DATE NOT NULL,
+    Total NUMBER(15, 2) DEFAULT 0 CHECK(Total >= 0))</entry>
+
+<entry key="Orders">CREATE TABLE Orders (
+    ID INT PRIMARY KEY,
+    Receipt_ID INT NOT NULL REFERENCES Receipts(ID),
+    Is_urgent INT DEFAULT 0 CHECK (Is_urgent IN (0,1)) NOT NULL)</entry>
+
+<entry key="Service_types">CREATE TABLE Service_types (
+    ID INT PRIMARY KEY,
+    Name VARCHAR2(100) UNIQUE NOT NULL,
+    Price NUMBER(15, 2) NOT NULL CHECK(Price >= 0))</entry>
+
+<entry key="Service_orders">CREATE TABLE Service_orders (
+    Order_ID INT PRIMARY KEY REFERENCES Orders(ID),
+    Service_type_ID INT NOT NULL REFERENCES Service_types(ID))</entry>
+
+<entry key="Paper_sizes">CREATE TABLE Paper_sizes (
+    ID INT PRIMARY KEY,
+    Name VARCHAR2(30) UNIQUE NOT NULL)</entry>
+
+<entry key="Paper_types">CREATE TABLE Paper_types (
+    ID INT PRIMARY KEY,
+    Name VARCHAR2(30) UNIQUE NOT NULL)</entry>
+
+<entry key="Print_prices">CREATE TABLE Print_prices (
+    ID INT PRIMARY KEY,
+    Paper_size_ID INT NOT NULL REFERENCES Paper_sizes(ID),
+    Paper_type_ID INT NOT NULL REFERENCES Paper_types(ID),
+    Price NUMBER(15, 2) NOT NULL CHECK(Price >= 0),
+    CONSTRAINT Unique_set_print_prices UNIQUE (Paper_size_ID, Paper_type_ID))</entry>
+
+<entry key="Print_discounts">CREATE TABLE Print_discounts (
+    ID INT PRIMARY KEY,
+    Photo_amount INT UNIQUE NOT NULL CHECK(Photo_amount > 0),
+    Discount INT NOT NULL CHECK(Discount >= 0 AND Discount &lt;= 100))</entry>
+
+<entry key="Print_orders">CREATE TABLE Print_orders (
+    Order_ID INT PRIMARY KEY REFERENCES Orders(ID),
+    Discount INT DEFAULT 0 NOT NULL CHECK(Discount >= 0 AND Discount &lt;= 100))</entry>
+
+<entry key="Frames">CREATE TABLE Frames (
+    ID INT PRIMARY KEY,
+    Print_order_ID INT NOT NULL REFERENCES Print_orders(Order_ID),
+    Paper_size_ID INT NOT NULL REFERENCES Paper_sizes(ID),
+    Paper_type_ID INT NOT NULL REFERENCES Paper_types(ID),
+    Frame_code VARCHAR2(80) NOT NULL,
+    Amount INT DEFAULT 1 NOT NULL CHECK(Amount > 0),
+    CONSTRAINT Unique_set_frames UNIQUE (Frame_code, Paper_size_ID, Paper_type_ID, Print_order_ID))</entry>
+
+<entry key="Developer_prices">CREATE TABLE Developer_prices (
+    ID INT PRIMARY KEY,
+    Price_name VARCHAR2(200) UNIQUE NOT NULL,
+    Price NUMBER(15, 2) NOT NULL CHECK(Price > 0))</entry>
+
+<entry key="Developer_orders">CREATE TABLE Developer_orders (
+    Order_ID INT REFERENCES Orders(ID),
+    Film_receipt_ID INT REFERENCES Receipts(ID))</entry>
+
+<entry key="Sale_orders">CREATE TABLE Sale_orders (
+    Order_ID INT PRIMARY KEY REFERENCES Orders(ID),
+    Product_ID INT NOT NULL REFERENCES Items(ID),
+    Amount INT DEFAULT 1 NOT NULL CHECK(Amount > 0))</entry>
+
+</properties>
